@@ -1,18 +1,21 @@
+from audioop import bias
 import numpy, random
 
+class Perceptron:
 
-bias = 1
-weights = [random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random()]
+    def __init__(self):
+        self.bias = 1
+        self.weights = [random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random()]
 
-def Perceptron(inputs, output, lr):
-    global errors
-    outputP = numpy.sum(inputs*weights[:-1]) + bias*weights[-1]
-    if outputP > 0:
-        outputP = 1
-    else:
-        outputP = 0
-    error = output - outputP
-    weights[:-1] += error*inputs*lr
-    weights[-1] += error * bias * lr
+    def activate(self, inputs, output, lr):
+        print(self.weights)
+        outputP = numpy.sum(inputs*self.weights[:-1]) + self.bias*self.weights[-1]
+        if outputP > 0:
+            outputP = 1
+        else:
+            outputP = 0
+        error = output - outputP
+        self.weights[:-1] += error*inputs*lr
+        self.weights[-1] += error*self.bias*lr
 
-    return outputP
+        return outputP
