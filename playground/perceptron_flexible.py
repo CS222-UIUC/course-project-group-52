@@ -23,7 +23,7 @@ def Perceptron(inputs, output):
 #initialize parameters of Perceptron, feel free to adjust
 print('----------------[Start]----------------')
 lr = 1 #learning rate - if set below 1, set dynamic to false (otherwise lr will become negative)
-dynamic = True #does the learning rate decrease
+dynamic = False #does the learning rate decrease
 bias = 1
 weights = [random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random()] #array is always size 7
 trials = 25 #size of training set
