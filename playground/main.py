@@ -14,7 +14,6 @@ for _ in range(trials):
     output = ((inputs[0] or inputs[1]) and (inputs[2] and inputs[3])) or (inputs[4] or inputs[5])
     p.activate(inputs, output, lr)
     if dynamic: lr -= (1/trials)
-print ('-----------------------------------------')
 '''----------------[Testing]----------------'''
 lr = 0
 errors = 0

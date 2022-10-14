@@ -8,7 +8,6 @@ class Perceptron:
         self.weights = [random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random()]
 
     def activate(self, inputs, output, lr):
-        print(self.weights)
         outputP = numpy.sum(inputs*self.weights[:-1]) + self.bias*self.weights[-1]
         if outputP > 0:
             outputP = 1
