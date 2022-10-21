@@ -5,6 +5,10 @@ Perceptron is a function for easier expansion into full NN
 """
 
 import numpy, random
+import networkx as nx
+import matplotlib.pyplot as plt
+trainarray = []
+testarray = []
 
 def Perceptron(inputs, output):
     global errors
@@ -19,14 +23,14 @@ def Perceptron(inputs, output):
         errors += 1
     weights[:-1] += error*inputs*lr
     weights[-1] += error * bias * lr
-
+    
 #initialize parameters of Perceptron, feel free to adjust
 print('----------------[Start]----------------')
 lr = 1 #learning rate - if set below 1, set dynamic to false (otherwise lr will become negative)
 dynamic = True #does the learning rate decrease
 bias = 1
 weights = [random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random()] #array is always size 7
-trials = 25 #size of training set
+trials = 64 #size of training set
 print('Learning Rate:', lr, '   Dynamic: ', dynamic, '  Trials: ', trials, '\nBias: ', bias, '\nWeights: ', weights, '\n')
 errors = 0 #don't change
 
@@ -38,6 +42,7 @@ for i in range(trials):
     output = ((inputs[0] or inputs[1]) and (inputs[2] and inputs[3])) or (inputs[4] or inputs[5])
     Perceptron(inputs, output)
     if dynamic: lr -= (1/trials)
+    trainarray.append(errors)   
 print('\n')
 
 #test on all possible inputs without learning
@@ -50,9 +55,15 @@ for i in range(64):
     array = numpy.array([int(b) for b in format(i, '#08b')[2:]])
     out = ((array[0] or array[1]) and (array[2] and array[3])) or (array[4] or array[5])
     Perceptron(array, out)
+    testarray.append(errors)
 print('\n')
 
 print('----------------[Results]----------------')
 print('Mistakes: ', errors)
 print('Success Rate: ', (64-errors)*100/64, '%')
 print('Final Weights: ', weights)
+
+fig, (ax1, ax2) = plt.subplots(1, 2)
+ax1.plot(trainarray)
+ax2.plot(testarray)
+plt.show()
