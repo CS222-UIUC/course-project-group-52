@@ -22,7 +22,7 @@ for i in range(64):
     out = ((array[0] or array[1]) and (array[2] and array[3])) or (array[4] or array[5])
     out = p.activate(array, out, lr)
     if (out != output):
-            errors += 1
+        errors += 1
 
 '''----------------[Results]----------------'''
 print('Mistakes: ', errors)
