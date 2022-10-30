@@ -64,9 +64,9 @@ while NOT_ACCURATE:
 
     if CORRECTS == 4:
         # Recall
-        print('\n• Final Weights: ', weights)
-        print('• Iterations: ', ITERATIONS)
-        print('• Final Activations: ',[sgn_activation(weights, X[i]) for i in range(M)])
+        print('\n•Final Weights: ', weights)
+        print('•Iterations: ', ITERATIONS)
+        print('•Final Activations: ',[sgn_activation(weights, X[i]) for i in range(M)])
         NOT_ACCURATE = False
     else:
         continue
