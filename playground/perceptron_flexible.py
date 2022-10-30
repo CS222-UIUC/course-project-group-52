@@ -7,6 +7,7 @@ Perceptron is a function for easier expansion into full NN
 import numpy, random
 
 def Perceptron(inputs, output):
+    global errors
     outputP = numpy.sum(inputs*weights[:-1]) + bias*weights[-1]
     if outputP > 0:
         outputP = 1

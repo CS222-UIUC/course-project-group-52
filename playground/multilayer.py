@@ -29,7 +29,7 @@ preActivation_H[-1] = 1 #bias
 postActivation_H = np.zeros(LAYER_SIZE+1)
 
 #----------------[Training]----------------
-TRIALS = 25
+TRIALS = 150
 for i in range(TRIALS):
     inputs = np.random.randint(2, size=INPUT_SIZE)
     inputs = np.append(inputs, 1) #bias
