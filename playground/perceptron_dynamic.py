@@ -7,7 +7,7 @@ import random
 
 def dot_product(_m1, _m2):
     """We will use this to multiply input and weight vectors"""
-    product = sum([(_m1[i] * _m2[i]) for i in range(len(_m1))])
+    product = sum(_m1[i] * _m2[i] for i in range(len(_m1)))
     return product
 
 def sgn_activation(_w, _x):
@@ -58,9 +58,9 @@ while NOT_ACCURATE:
             for n in range(2):
                 # Updating weights based on difference between target and actual output
                 weights[n] -= LEARNING_RATE * diff * X[i][n]
-            print('\n',ITERATIONS)
-            print('Current Weights: ', weights)
-            print('Current Activations: ', [sgn_activation(weights, X[i]) for i in range(M)])
+            print('\n•',ITERATIONS)
+            print('•Current Weights: ', weights)
+            print('•Current Activations: ', [sgn_activation(weights, X[i]) for i in range(M)])
 
     if CORRECTS == 4:
         # Recall

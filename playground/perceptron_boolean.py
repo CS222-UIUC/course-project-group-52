@@ -47,12 +47,12 @@ while ITERATIONS <= 10:
     CORRECTS = 0
     # Looping through each pair of weights and inputs
     for i in range(M):
-        y = sgn_activation(X[i], weights)
+        Y = sgn_activation(X[i], weights)
         t = targets[i]
-        if y == t:
+        if Y == t:
             CORRECTS += 1
         else:
-            diff = y - t
+            diff = Y - t
             for n in range(2):
                 # Updating weights based on difference between target and actual output
                 weights[n] -= LEARNING_RATE * diff * X[i][n]

@@ -1,7 +1,7 @@
 """
-    Testing suite for perceptrons and neural networks.
-    Tests that changes to certain parts of the algoritms have the intended affects.
-    Tests that perceptrons and neural networks have expected accuracies
+Testing suite for perceptrons and neural networks.
+Tests that changes to certain parts of the algoritms have the intended affects.
+Tests that perceptrons and neural networks have expected accuracies
 """
 
 import random
