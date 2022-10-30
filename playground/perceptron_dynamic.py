@@ -5,22 +5,19 @@ Has a dynamic learning rate. Decreases every epoch (iteration)
 
 import random
 
-# We will use this to multiply input and weight vectors
-def dotProduct(m1, m2):
-    product = sum([(m1[i] * m2[i]) for i in range(len(m1))])
+def dot_product(_m1, _m2):
+    """We will use this to multiply input and weight vectors"""
+    product = sum([(_m1[i] * _m2[i]) for i in range(len(_m1))])
     return product
 
-# Returns 1/0 based on dot product
-def sgnActivation(w, x):
-    wx = dotProduct(w, x)
-    if wx > 0:
+def sgn_activation(_w, _x):
+    """Returns 1/0 based on dot product"""
+    _wx = dot_product(_w, _x)
+    if _wx > 0:
         return 1
-    else:
-        return 0
+    return 0
 
-"""
-                          --- Initialisation ---
-"""
+#                          --- Initialisation ---
 
 # Input array with format [input1, input2] for OR function
 X = [
@@ -43,36 +40,36 @@ weights = [round(random.uniform(-1, 1)), round(random.uniform(-1, 1))]
                           --- Training ---
 """
 
-iterations = 0
-learning_rate = 0.25  # This is the starting learning rate. We will be updrating it per epoch
-not_accurate = True
-m = len(X)
-while not_accurate:
-    iterations += 1
-    corrects = 0
+ITERATIONS = 0
+LEARNING_RATE = 0.25  # This is the starting learning rate. We will be updrating it per epoch
+NOT_ACCURATE = True
+M = len(X)
+while NOT_ACCURATE:
+    ITERATIONS += 1
+    CORRECTS = 0
     # Looping through each pair of weights and inputs
-    for i in range(m):
-        y = sgnActivation(X[i], weights)
+    for i in range(M):
+        Y = sgn_activation(X[i], weights)
         t = targets[i]
-        if y == t:
-            corrects += 1
+        if Y == t:
+            CORRECTS += 1
         else:
-            diff = y - t
+            diff = Y - t
             for n in range(2):
                 # Updating weights based on difference between target and actual output
-                weights[n] -= learning_rate * diff * X[i][n]
-            print('\n',iterations)
+                weights[n] -= LEARNING_RATE * diff * X[i][n]
+            print('\n',ITERATIONS)
             print('Current Weights: ', weights)
-            print('Current Activations: ', [sgnActivation(weights, X[i]) for i in range(m)])
+            print('Current Activations: ', [sgn_activation(weights, X[i]) for i in range(M)])
 
-    if corrects == 4:
+    if CORRECTS == 4:
         # Recall
         print('\n• Final Weights: ', weights)
-        print('• Iterations: ', iterations)
-        print('• Final Activations: ',[sgnActivation(weights, X[i]) for i in range(m)])
-        not_accurate = False
+        print('• Iterations: ', ITERATIONS)
+        print('• Final Activations: ',[sgn_activation(weights, X[i]) for i in range(M)])
+        NOT_ACCURATE = False
     else:
         continue
 
     # Decreasing the learning rate with the function n1 = n0 / (1 + epochs)
-    learning_rate = learning_rate / (1 + iterations)
+    LEARNING_RATE = LEARNING_RATE / (1 + ITERATIONS)
