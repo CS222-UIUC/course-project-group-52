@@ -5,12 +5,12 @@ Implementation of the Perceptron algorithm. Learns the  boolean OR function
 import random
 
 def dot_product(_m1, _m2):
-    """ We will use this to multiply input and weight vectors"""
+    """We will use this to multiply input and weight vectors"""
     product = sum(_m1[i] * _m2[i] for i in range(len(_m1)))
     return product
 
 def sgn_activation(_w, _x):
-    """ Returns 1/0 based on dot product"""
+    """Returns 1/0 based on dot product"""
     _wx = dot_product(_w, _x)
     if _wx > 0:
         return 1
