@@ -5,6 +5,7 @@
 '''
 
 import numpy as np
+from tensorflow import keras
 
 def sigmoid(_x):
     '''top is relu, bottom is sigmoid'''
@@ -18,8 +19,9 @@ def dsigmoid(_x):
 
 LR = 0.1
 LAYER_SIZE = 5
-INPUT_SIZE= 6
+INPUT_SIZE= 784 #does not include bais
 OUTPUT_SIZE = 1
+TRIALS = 150
 
 hidden_weights = np.random.uniform(-1, 1, (INPUT_SIZE+1, LAYER_SIZE))
 output_weights = np.random.uniform(-1, 1, LAYER_SIZE+1)
@@ -29,55 +31,59 @@ preActivation_H[-1] = 1 #bias
 postActivation_H = np.zeros(LAYER_SIZE+1)
 
 #----------------[Training]----------------
-TRIALS = 150
-for i in range(TRIALS):
-    inputs = np.random.randint(2, size=INPUT_SIZE)
-    inputs = np.append(inputs, 1) #bias
-    output = ((inputs[0] or inputs[1]) and (inputs[2] and inputs[3])) or (inputs[4] or inputs[5])
+def train(_inputs, _output):
+    '''trains the network on an array of inputs and an output'''
 
     #feedforward
     for node in range(LAYER_SIZE):
-        preActivation_H[node] = np.dot(inputs, hidden_weights[:,node])
+        preActivation_H[node] = np.dot(_inputs, hidden_weights[:,node])
         postActivation_H[node] = sigmoid(preActivation_H[node])
-    preActivation_O = np.dot(postActivation_H, output_weights)
-    postActivation_O = sigmoid(preActivation_O)
+    pre_activation_o = np.dot(postActivation_H, output_weights)
+    post_activation_o = sigmoid(pre_activation_o)
 
-    error = postActivation_O - output
+    error = post_activation_o - _output
 
     #backpropogation
     for hidden_node in range(LAYER_SIZE):
-        S_error = error * dsigmoid(preActivation_O)
-        gradient_output = S_error * postActivation_H[hidden_node]
+        s_error = error * dsigmoid(pre_activation_o)
+        gradient_output = s_error * postActivation_H[hidden_node]
 
         for input_node in range(INPUT_SIZE):
-            gradient_hidden = S_error * output_weights[hidden_node] * \
-                dsigmoid(preActivation_H[hidden_node]) * inputs[input_node]
+            gradient_hidden = s_error * output_weights[hidden_node] * \
+                dsigmoid(preActivation_H[hidden_node]) * _inputs[input_node]
             hidden_weights[input_node, hidden_node] -= LR * gradient_hidden
 
         output_weights[hidden_node] -= LR * gradient_output
 
     # LR = LR*(1-0.01)**i
 #----------------[Testing]----------------
-ERRORS = 0
-for i in range(64):
-    array = np.array([int(b) for b in format(i, '#08b')[2:]])
-    array = np.append(array, 1)
-    out = ((array[0] or array[1]) and (array[2] and array[3])) or (array[4] or array[5])
+def test(_inputs):
+    '''runs the network on an array of inputs'''
+
     for node in range(LAYER_SIZE):
-        preActivation_H[node] = np.dot(array, hidden_weights[:,node])
+        preActivation_H[node] = np.dot(_inputs, hidden_weights[:,node])
         postActivation_H[node] = sigmoid(preActivation_H[node])
-    preActivation_O = np.dot(postActivation_H, output_weights)
-    postActivation_O = sigmoid(preActivation_O)
+    pre_activation_o = np.dot(postActivation_H, output_weights)
+    post_activation_o = sigmoid(pre_activation_o)
 
-    if postActivation_O > 0.5:
-        OUT = 1
-    else:
-        OUT = 0
+    return post_activation_o
 
-    if OUT != out:
-        print(postActivation_O, ' ', OUT, out)
+#runs the nn on the MNIST handwritten numbers dataset
+#60,000 training arrays, 10,000 testing arrays, each array size 28 x 28 = 784
+(train_inputs, train_outputs), (test_inputs, test_outputs) = keras.datasets.mnist.load_data()
+for i in range(train_inputs.shape[0]):
+    inputs = train_inputs[i].flatten()
+    inputs = np.append(inputs, 1) #append bias
+    train(inputs, train_outputs[i])
+
+ERRORS = 0
+for i in range(test_inputs.shape[0]):
+    inputs = test_inputs[i].flatten()
+    inputs = np.append(inputs, 1)
+    out = test(inputs)
+    if out != test_outputs[i]:
         ERRORS += 1
 
 print('----------------[Results]----------------')
 print('Mistakes: ', ERRORS)
-print('Success Rate: ', (64-ERRORS)*100/64, '%')
+print('Success Rate: ', (test_inputs.shape[0]-ERRORS)*100/test_inputs.shape[0], '%')
