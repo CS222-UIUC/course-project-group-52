@@ -24,7 +24,7 @@ def dtanh(_x):
     '''Derivative of Tanh'''
     return 1 - (np.tanh(_x)**2)
 
-#microparameters, need adjustment
+#hyperparameters, need adjustment
 LR = 0.1
 LAYER_SIZE = 20
 INPUT_SIZE= 784
