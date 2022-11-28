@@ -5,6 +5,7 @@
 '''
 
 import time
+import csv
 import numpy as np
 from tensorflow import keras
 
@@ -29,12 +30,19 @@ LR = 0.1
 LAYER_SIZE = 20
 INPUT_SIZE= 784
 OUTPUT_SIZE = 10
-EPOCHS = 50
+EPOCHS = 10
 
 hidden_weights = np.random.normal(loc=0, scale=1, size=(LAYER_SIZE, INPUT_SIZE))
 output_weights = np.random.normal(loc=0, scale=1, size=(OUTPUT_SIZE, LAYER_SIZE))
 hidden_bias = np.random.normal(loc=1, scale=1, size=(LAYER_SIZE))
 output_bias = np.random.normal(loc=1, scale=1, size=(OUTPUT_SIZE))
+
+with open('network.csv', 'w', encoding='utf-8') as file:
+    writer = csv.writer(file, lineterminator='\n')
+    writer.writerow(np.zeros(10))
+    writer.writerow(np.zeros(OUTPUT_SIZE))
+    writer.writerow(hidden_weights[:10,:10].flatten())
+    writer.writerow(output_weights[:,:10].flatten())
 
 #runs the nn on the MNIST handwritten numbers dataset
 #60,000 training arrays, 10,000 testing arrays, each array size 28 x 28 = 784
@@ -45,6 +53,7 @@ test_mean = np.mean(test_inputs.flatten())
 st = time.time()
 for e in range(EPOCHS):
     TRAIN_ERRORS = 0
+    COUNT = 0
     for i in range(train_inputs.shape[0]):
         inputs = train_inputs[i].flatten()
         inputs = (inputs - mean) / 255
@@ -77,9 +86,19 @@ for e in range(EPOCHS):
         hidden_bias -= LR * dc_db_h
         hidden_weights -= LR * dc_dw_h
 
+        if COUNT % 1000 == 0:
+            with open('network.csv', 'a', encoding='utf-8') as file:
+                writer = csv.writer(file, lineterminator='\n')
+                writer.writerow(hidden_act[:10])
+                writer.writerow(output_act)
+                writer.writerow(hidden_weights[:10,:10].flatten())
+                writer.writerow(output_weights[:,:10].flatten())
+        COUNT += 1
+
     print('Epoch: ',e+1,'/',EPOCHS,'\tAccuracy: ',round((60000-TRAIN_ERRORS)/600, 3),'%',end='\r')
 
 ERRORS = 0
+COUNT = 0
 for i in range(test_inputs.shape[0]):
     inputs = test_inputs[i].flatten()
     inputs = (inputs - test_mean)/255
@@ -90,10 +109,18 @@ for i in range(test_inputs.shape[0]):
     if np.argmax(output_act) != test_outputs[i]:
         ERRORS += 1
 
+    if COUNT % 1000 == 0:
+        with open('network.csv', 'a', encoding='utf-8') as file:
+            writer = csv.writer(file, lineterminator='\n')
+            writer.writerow(hidden_act[:10])
+            writer.writerow(output_act)
+            writer.writerow(hidden_weights[:10,:10].flatten())
+            writer.writerow(output_weights[:,:10].flatten())
+    COUNT += 1
+
 et = time.time()
 
-print('----------------[Results]----------------')
-print('Epoch: ', e, '/', EPOCHS)
+print('\n----------------[Results]----------------')
 print('Mistakes: ', ERRORS)
 print('Success Rate: ', (test_inputs.shape[0]-ERRORS)*100/test_inputs.shape[0], '%')
 print('Time: ', round((et-st)/60,3), 'minutes')
