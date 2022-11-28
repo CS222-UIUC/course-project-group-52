@@ -4,80 +4,96 @@
     consisting of 9 neurons
 '''
 
+import time
 import numpy as np
+from tensorflow import keras
 
 def sigmoid(_x):
-    '''top is relu, bottom is sigmoid'''
-    return max(0,_x)
-    # return 1/(1+np.exp(-_x))
+    '''Sigmoid activation function'''
+    return 1 / (1+np.exp(-1*_x))
 
 def dsigmoid(_x):
-    '''the derivative of relu(top) and sigmoid (bottom)'''
-    return 1*(_x>0)
-    # return sigmoid(_x)*(1-sigmoid(_x))
+    '''Derivative of Sigmoid'''
+    return sigmoid(_x) * (1 - sigmoid(_x))
 
+def tanh(_x):
+    '''Tanh activation function'''
+    return np.tanh(_x)
+
+def dtanh(_x):
+    '''Derivative of Tanh'''
+    return 1 - (np.tanh(_x)**2)
+
+#hyperparameters, need adjustment
 LR = 0.1
-LAYER_SIZE = 5
-INPUT_SIZE= 6
-OUTPUT_SIZE = 1
+LAYER_SIZE = 20
+INPUT_SIZE= 784
+OUTPUT_SIZE = 10
+EPOCHS = 50
 
-hidden_weights = np.random.uniform(-1, 1, (INPUT_SIZE+1, LAYER_SIZE))
-output_weights = np.random.uniform(-1, 1, LAYER_SIZE+1)
+hidden_weights = np.random.normal(loc=0, scale=1, size=(LAYER_SIZE, INPUT_SIZE))
+output_weights = np.random.normal(loc=0, scale=1, size=(OUTPUT_SIZE, LAYER_SIZE))
+hidden_bias = np.random.normal(loc=1, scale=1, size=(LAYER_SIZE))
+output_bias = np.random.normal(loc=1, scale=1, size=(OUTPUT_SIZE))
 
-preActivation_H = np.zeros(LAYER_SIZE+1)
-preActivation_H[-1] = 1 #bias
-postActivation_H = np.zeros(LAYER_SIZE+1)
+#runs the nn on the MNIST handwritten numbers dataset
+#60,000 training arrays, 10,000 testing arrays, each array size 28 x 28 = 784
+(train_inputs, train_outputs), (test_inputs, test_outputs) = keras.datasets.mnist.load_data()
+mean = np.mean(train_inputs[0:60000].flatten())
+test_mean = np.mean(test_inputs.flatten())
 
-#----------------[Training]----------------
-TRIALS = 150
-for i in range(TRIALS):
-    inputs = np.random.randint(2, size=INPUT_SIZE)
-    inputs = np.append(inputs, 1) #bias
-    output = ((inputs[0] or inputs[1]) and (inputs[2] and inputs[3])) or (inputs[4] or inputs[5])
+st = time.time()
+for e in range(EPOCHS):
+    TRAIN_ERRORS = 0
+    for i in range(train_inputs.shape[0]):
+        inputs = train_inputs[i].flatten()
+        inputs = (inputs - mean) / 255
+        outputs = np.zeros(OUTPUT_SIZE)
+        outputs[train_outputs[i]] = 1
 
-    #feedforward
-    for node in range(LAYER_SIZE):
-        preActivation_H[node] = np.dot(inputs, hidden_weights[:,node])
-        postActivation_H[node] = sigmoid(preActivation_H[node])
-    preActivation_O = np.dot(postActivation_H, output_weights)
-    postActivation_O = sigmoid(preActivation_O)
+        hidden_act = tanh((hidden_weights @ inputs) + hidden_bias)
+        output_act = sigmoid((output_weights @ hidden_act) + output_bias)
+        error = (outputs - output_act)
 
-    error = postActivation_O - output
+        if np.argmax(output_act) != train_outputs[i]:
+            TRAIN_ERRORS += 1
 
-    #backpropogation
-    for hidden_node in range(LAYER_SIZE):
-        S_error = error * dsigmoid(preActivation_O)
-        gradient_output = S_error * postActivation_H[hidden_node]
+        bt = time.time()
 
-        for input_node in range(INPUT_SIZE):
-            gradient_hidden = S_error * output_weights[hidden_node] * \
-                dsigmoid(preActivation_H[hidden_node]) * inputs[input_node]
-            hidden_weights[input_node, hidden_node] -= LR * gradient_hidden
+        #derivative of output / hidden activation
+        d_output = dsigmoid((output_weights @ hidden_act) + output_bias) * error
+        d_hidden = dtanh((hidden_weights @ inputs) + hidden_bias) * (output_weights.T @ d_output)
 
-        output_weights[hidden_node] -= LR * gradient_output
+        #derivative of cost with respect to output bias, output weights, hidden bias, hidden weights
+        #reshape is same as transpose
+        dc_db_o = -1*d_output
+        dc_dw_o = (-1*hidden_act.reshape(LAYER_SIZE, 1) @ d_output.reshape(1, OUTPUT_SIZE)).T
+        dc_dw_o = (-1*hidden_act.reshape(LAYER_SIZE, 1) @ d_output.reshape(1, OUTPUT_SIZE)).T
+        dc_db_h = -1*d_hidden
+        dc_dw_h = (-1 * inputs.reshape(INPUT_SIZE, 1) @ d_hidden.reshape(LAYER_SIZE, 1).T).T
 
-    # LR = LR*(1-0.01)**i
-#----------------[Testing]----------------
+        output_bias -= LR * dc_db_o
+        output_weights -= LR * dc_dw_o
+        hidden_bias -= LR * dc_db_h
+        hidden_weights -= LR * dc_dw_h
+
+    print('Epoch: ',e+1,'/',EPOCHS,'\tAccuracy: ',round((60000-TRAIN_ERRORS)/600, 3),'%',end='\r')
+
 ERRORS = 0
-for i in range(64):
-    array = np.array([int(b) for b in format(i, '#08b')[2:]])
-    array = np.append(array, 1)
-    out = ((array[0] or array[1]) and (array[2] and array[3])) or (array[4] or array[5])
-    for node in range(LAYER_SIZE):
-        preActivation_H[node] = np.dot(array, hidden_weights[:,node])
-        postActivation_H[node] = sigmoid(preActivation_H[node])
-    preActivation_O = np.dot(postActivation_H, output_weights)
-    postActivation_O = sigmoid(preActivation_O)
+for i in range(test_inputs.shape[0]):
+    inputs = test_inputs[i].flatten()
+    inputs = (inputs - test_mean)/255
 
-    if postActivation_O > 0.5:
-        OUT = 1
-    else:
-        OUT = 0
+    hidden_act = tanh((hidden_weights @ inputs) + hidden_bias)
+    output_act = sigmoid((output_weights @ hidden_act) + output_bias)
 
-    if OUT != out:
-        print(postActivation_O, ' ', OUT, out)
+    if np.argmax(output_act) != test_outputs[i]:
         ERRORS += 1
 
+et = time.time()
+
 print('----------------[Results]----------------')
+print('Epoch: ', e, '/', EPOCHS)
 print('Mistakes: ', ERRORS)
-print('Success Rate: ', (64-ERRORS)*100/64, '%')
+print('Success Rate: ', (test_inputs.shape[0]-ERRORS)*100/test_inputs.shape[0], '%')
+print('Time: ', round((et-st)/60,3), 'minutes')
