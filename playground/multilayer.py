@@ -40,6 +40,7 @@ output_bias = np.random.normal(loc=1, scale=1, size=(OUTPUT_SIZE))
 with open('network.csv', 'w', encoding='utf-8') as file:
     writer = csv.writer(file, lineterminator='\n')
     writer.writerow(np.zeros(10))
+    writer.writerow(np.zeros(10))
     writer.writerow(np.zeros(OUTPUT_SIZE))
     writer.writerow(hidden_weights[:10,:10].flatten())
     writer.writerow(output_weights[:,:10].flatten())
@@ -89,6 +90,7 @@ for e in range(EPOCHS):
         if COUNT % 1000 == 0:
             with open('network.csv', 'a', encoding='utf-8') as file:
                 writer = csv.writer(file, lineterminator='\n')
+                writer.writerow(inputs[:10])
                 writer.writerow(hidden_act[:10])
                 writer.writerow(output_act)
                 writer.writerow(hidden_weights[:10,:10].flatten())
@@ -112,6 +114,7 @@ for i in range(test_inputs.shape[0]):
     if COUNT % 1000 == 0:
         with open('network.csv', 'a', encoding='utf-8') as file:
             writer = csv.writer(file, lineterminator='\n')
+            writer.writerow(inputs[:10])
             writer.writerow(hidden_act[:10])
             writer.writerow(output_act)
             writer.writerow(hidden_weights[:10,:10].flatten())
