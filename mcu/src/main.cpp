@@ -35,18 +35,27 @@ void loop() {
     digitalWrite(led4, LOW);
     delay(400);
 
-    // analogWrite(led1, 255);
-    // delay(400);
-    // analogWrite(led2, 255);
-    // analogWrite(led3, 255);
-    // delay(400);
-    // analogWrite(led4, 255);
-    // delay(400);
-    // analogWrite(led1, 0);
-    // delay(400);
-    // analogWrite(led2, 0);
-    // analogWrite(led3, 0);
-    // delay(400);
-    // analogWrite(led4, 0);
-    // delay(400);
+    /* 
+    ^
+    |   No PWM, only brightens and dims LEDs
+    |
+    Comment lower section or upper section out.
+    |
+    |   PWM, brightens and dims LEDs based on a numerical range from 0-255
+    V
+    */
+    analogWrite(led1, 255);
+    delay(400);
+    analogWrite(led2, 255);
+    analogWrite(led3, 255);
+    delay(400);
+    analogWrite(led4, 255);
+    delay(400);
+    analogWrite(led1, 0);
+    delay(400);
+    analogWrite(led2, 0);
+    analogWrite(led3, 0);
+    delay(400);
+    analogWrite(led4, 0);
+    delay(400);
 }
