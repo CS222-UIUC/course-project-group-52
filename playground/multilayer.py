@@ -42,13 +42,13 @@ with open('network.csv', 'w', encoding='utf-8') as file:
     writer.writerow(np.zeros(10))
     writer.writerow(np.zeros(10))
     writer.writerow(np.zeros(OUTPUT_SIZE))
-    writer.writerow(hidden_weights[:10,:10].flatten())
+    writer.writerow(hidden_weights[:10,400:410].flatten())
     writer.writerow(output_weights[:,:10].flatten())
 
 #runs the nn on the MNIST handwritten numbers dataset
 #60,000 training arrays, 10,000 testing arrays, each array size 28 x 28 = 784
 (train_inputs, train_outputs), (test_inputs, test_outputs) = keras.datasets.mnist.load_data()
-mean = np.mean(train_inputs[0:60000].flatten())
+mean = np.mean(train_inputs.flatten())
 test_mean = np.mean(test_inputs.flatten())
 
 st = time.time()
@@ -90,10 +90,10 @@ for e in range(EPOCHS):
         if COUNT % 1000 == 0:
             with open('network.csv', 'a', encoding='utf-8') as file:
                 writer = csv.writer(file, lineterminator='\n')
-                writer.writerow(inputs[:10])
+                writer.writerow(inputs[400:410])
                 writer.writerow(hidden_act[:10])
                 writer.writerow(output_act)
-                writer.writerow(hidden_weights[:10,:10].flatten())
+                writer.writerow(hidden_weights[:10,400:410].flatten())
                 writer.writerow(output_weights[:,:10].flatten())
         COUNT += 1
 
@@ -114,10 +114,10 @@ for i in range(test_inputs.shape[0]):
     if COUNT % 1000 == 0:
         with open('network.csv', 'a', encoding='utf-8') as file:
             writer = csv.writer(file, lineterminator='\n')
-            writer.writerow(inputs[:10])
+            writer.writerow(inputs[400:410])
             writer.writerow(hidden_act[:10])
             writer.writerow(output_act)
-            writer.writerow(hidden_weights[:10,:10].flatten())
+            writer.writerow(hidden_weights[:10,400:410].flatten())
             writer.writerow(output_weights[:,:10].flatten())
     COUNT += 1
 
