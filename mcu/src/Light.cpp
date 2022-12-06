@@ -14,6 +14,8 @@ void Light::WriteBrightness(unsigned int new_brightness) {
 void Light::WriteBrightnessDigital(int status) {
     if (status > 0) {
         brightness = HIGH;
+    } else {
+        brightness = LOW;
     }
     digitalWrite(position_id, brightness);
     
