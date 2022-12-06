@@ -12,3 +12,9 @@ void Layer::WriteLayer(int brightness_vec[]) {
         node_vec[i].WriteBrightness(brightness_vec[i]);
     }
 }
+
+void Layer::WriteLayerDigital(int brightness_vec[]) {
+    for (int i = 0; i < layer_size; i++) {
+        node_vec[i].WriteBrightness(brightness_vec[i]);
+    }
+}
