@@ -2,6 +2,8 @@
 ## MIND-GLOW
 **MNIST Image Neural Determination - Glowing Light Optical Web**
 
+![schematic of our diagram](schematic.png)
+
 The purpose of our project is to write a neural network that trains on an MNIST dataset to identify handwritten digits and display the input, output, and hidden layer on a board of lights when reading a CSV of testing data.
 
 Our technical architechture consists of the neural network connected to a real-time operating system that populates a CSV file with data. We then use PlatformIO to extract and interpret the data in the CSV, which is then connected to the hardware portion of the project by being read by a microcontroller, and in turn activating lights based on the information in the input, hidden, and output layer.
