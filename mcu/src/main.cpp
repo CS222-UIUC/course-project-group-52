@@ -101,38 +101,44 @@ void setup() {
     
    File dataFile = SD.open("network.csv", FILE_READ);
    String file_line = "";
-   int line_num = 0;
-   while (dataFile.available() != 0) {
-    file_line = dataFile.readStringUntil('\n');
-    // Serial.println(file_line);
-    if (line_num % 0 != 0 || line_num % 1 != 0 || line_num % 2 != 0) {
-        delay(300);
+   int line_num = 1;
+   while (dataFile.available()) {
+    file_line = dataFile.readStringUntil('\n', 2000000);
+    if (line_num % 5 != 1 && line_num % 5 != 2 && line_num % 5 != 3) {
+        delay(100);
         in.WriteLayerDigital(in_vec);
         hidden.WriteLayer(hidden_vec);
         out.WriteLayer(out_vec);
         line_num++;
+        continue;
     }
+    Serial.println(line_num);
     String temp = "";
     int pos = 0;
     for (auto x : file_line) {
         if (x != ',') {
             temp += x;
         } else {
-            Serial.println("Pos: ");
-            Serial.print(pos);
-            Serial.print(" Value: "); 
-            Serial.print(temp);
-            if (line_num % 0 == 0) {
-                in_vec[pos] = 128 * abs(temp.toInt());
-            } else if (line_num % 1 == 0) {
-                hidden_vec[pos] = 64 * abs(temp.toInt());
-            } else if (line_num % 2 == 0) {
-                out_vec[pos] = 128 * abs(temp.toInt());
+            if (line_num % 5 == 1) {
+                in_vec[pos] = 64 * abs(temp.toFloat());
+            } else if (line_num % 5 == 2) {
+                hidden_vec[pos] = 64 * abs(temp.toFloat());
+            } else if (line_num % 5 == 3) {
+                out_vec[pos] = 64 * abs(temp.toFloat());
             }
             pos++;
             temp = "";
         }
     }
+    if (line_num % 5 == 1) {
+        in_vec[pos] = 64 * abs(temp.toFloat());
+    } else if (line_num % 5 == 2) {
+        hidden_vec[pos] = 64 * abs(temp.toFloat());
+    } else if (line_num % 5 == 3) {
+        out_vec[pos] = 64 * abs(temp.toFloat());
+    }
+    pos++;
+    temp = "";
     line_num++;
    }
 }
