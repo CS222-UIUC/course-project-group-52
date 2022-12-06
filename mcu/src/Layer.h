@@ -1,11 +1,13 @@
 #pragma once
 
-#include "vector.h"
 #include "Light.h"
 
 class Layer {
     public:
-        void WriteLayer(Vector<int> brightness_vec);
+        Layer(int l_size, Light nodes[]);
+        void WriteLayer(int brightness_vec[]);
+        void WriteLayerDigital(int brightness_vec[]);
     private:
-        Vector<Light> node_vec;
+        Light node_vec[15];
+        int layer_size;
 };
