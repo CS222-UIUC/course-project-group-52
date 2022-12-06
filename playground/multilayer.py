@@ -39,6 +39,7 @@ output_bias = np.random.normal(loc=1, scale=1, size=(OUTPUT_SIZE))
 
 with open('network.csv', 'w', encoding='utf-8') as file:
     writer = csv.writer(file, lineterminator='\n')
+    writer.writerow(["inputs 1-10, hidden act 1-10, outputs 1-10, hidden weights, output weights"])
     writer.writerow(np.zeros(10))
     writer.writerow(np.zeros(10))
     writer.writerow(np.zeros(OUTPUT_SIZE))
