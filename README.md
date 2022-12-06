@@ -1,5 +1,6 @@
 # course-project-group-52
-course-project-group-52 created by GitHub Classroom
+##MIND-GLOW
+**MNIST Image Neural Determination - Glowing Light Optical Web**
 
 The purpose of our project is to write a neural network that trains on an MNIST dataset to identify handwritten digits and display the input, output, and hidden layer on a board of lights when reading a CSV of testing data.
 
