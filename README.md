@@ -1,5 +1,4 @@
-# course-project-group-52
-## MIND-GLOW
+# MIND-GLOW
 **MNIST Image Neural Determination - Glowing Light Optical Web**
 
 ![schematic of our diagram](schematic.png)
