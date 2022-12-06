@@ -105,9 +105,9 @@ void setup() {
    while (dataFile.available()) {
     file_line = dataFile.readStringUntil('\n', 2000000);
     if (line_num % 5 != 1 && line_num % 5 != 2 && line_num % 5 != 3) {
-        delay(100);
+        delay(50);
         in.WriteLayerDigital(in_vec);
-        hidden.WriteLayer(hidden_vec);
+        hidden.WriteLayer(out_vec);
         out.WriteLayer(out_vec);
         line_num++;
         continue;
@@ -120,22 +120,24 @@ void setup() {
             temp += x;
         } else {
             if (line_num % 5 == 1) {
-                in_vec[pos] = 64 * abs(temp.toFloat());
+                in_vec[pos] = MapFromRange(temp.toFloat(), -1, 1, 0, 255);
             } else if (line_num % 5 == 2) {
-                hidden_vec[pos] = 64 * abs(temp.toFloat());
+                hidden_vec[pos] = MapFromRange(temp.toFloat(), -2, 5, 0, 255);
             } else if (line_num % 5 == 3) {
-                out_vec[pos] = 64 * abs(temp.toFloat());
+                out_vec[pos] = MapFromRange(temp.toFloat(), 0, 1, 0, 255);
             }
             pos++;
             temp = "";
         }
     }
+    
     if (line_num % 5 == 1) {
-        in_vec[pos] = 64 * abs(temp.toFloat());
+        in_vec[pos] = MapFromRange(temp.toFloat(), -1, 1, 0, 255);
     } else if (line_num % 5 == 2) {
-        hidden_vec[pos] = 64 * abs(temp.toFloat());
+        hidden_vec[pos] = MapFromRange(temp.toFloat(), -2, 5, 0, 255);
     } else if (line_num % 5 == 3) {
-        out_vec[pos] = 64 * abs(temp.toFloat());
+        out_vec[pos] = MapFromRange(temp.toFloat(), 0, 1, 0, 255);
+        Serial.println(temp.toFloat());
     }
     pos++;
     temp = "";
